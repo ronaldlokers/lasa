@@ -1,0 +1,14 @@
+{{#with article}}
+<div class="col-sm-6 col-md-4">
+  <div class="thumbnail">
+    {{#if image}}
+    <img src="http://placehold.it/360x200" alt="{{title}}">
+    {{/if}}
+    <div class="caption">
+      <h3>{{title}}</h3>
+      <p>{{description}}</p>
+      <p><a href="/article/{{_id}}" class="btn btn-primary" role="button">Read article</a></p>
+    </div>
+  </div>
+</div>
+{{/with}}
