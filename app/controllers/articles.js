@@ -11,11 +11,11 @@ function ensureAuthenticated(req, res, next) {
     return next(); }
 
   // denied. redirect to login
-  res.redirect('/login');
+  res.redirect(401, '/login');
 }
 
 module.exports = function (app) {
-  router.get('/', ensureAuthenticated, function (req, res, next) {    
+  router.get('/', ensureAuthenticated, function (req, res, next) {
     Article.find({ accountId: app.locals.account.id}, function (error, articles) {
       if (error) {
         return next(error);

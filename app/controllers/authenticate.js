@@ -5,20 +5,31 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var Account = mongoose.model('Account');
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    // req.user is available for use here
+    return next(); }
+
+  // denied. redirect to login
+  res.redirect(401, '/login');
+}
+
 module.exports = function (app, config) {
   router.route('/login')
     .post(passport.authenticate('local', {
-       failureRedirect: '/login'
+       failureRedirect: 'back',
+       failureFlash: true
      }), function(req, res) {
       //Set the user as global variable
       app.locals.account = req.user;
 
-      res.redirect('/profile');
+      res.redirect(303, '/profile');
     })
     .get(function (req, res, next) {
       req.breadcrumbs('Login');
       res.render('login', {
         breadcrumbs: req.breadcrumbs(),
+        messages: req.flash(),
         title: 'the login page'
       });
     });
@@ -28,16 +39,11 @@ module.exports = function (app, config) {
       app.locals.account = undefined;
 
       req.logout();
-      res.redirect('/');
+      res.redirect(303, '/');
   });
 
   router.route('/profile')
-    .all(function (req, res, next) {
-        if (!req.user) {
-            res.redirect('/login');
-        }
-        next();
-    })
+    .all(ensureAuthenticated)
     .get(function (req, res) {
       req.breadcrumbs('Profile');
 
@@ -50,13 +56,12 @@ module.exports = function (app, config) {
     .post(function (req, res) {
       Account.register(new Account({ username : req.body.username }), req.body.password, function(error, account) {
         if (error) {
-          return console.error(error);
-          //return res.render('register', { account : account });
+          res.status(400);
+          return res.send(error);
+
         }
 
-        passport.authenticate('local')(req, res, function () {
-          res.redirect('/articles');
-        });
+        res.redirect(303, '/articles');
       });
     });
 

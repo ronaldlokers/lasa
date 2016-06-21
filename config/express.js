@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var exphbs  = require('express-handlebars');
 var express = require('express');
 var favicon = require('serve-favicon');
+var flash = require('connect-flash');
 var glob = require('glob');
 var logger = require('morgan');
 var methodOverride = require('method-override');
@@ -21,10 +22,7 @@ module.exports = function(app, config) {
     layoutsDir: config.root + '/app/views/layouts/',
     defaultLayout: 'main',
     extname: '.hbs',
-    partialsDir: [config.root + '/app/views/partials/'],
-    helpers: {
-      list: require(config.root + '/app/helpers/handlebars/list.js')
-    }
+    partialsDir: [config.root + '/app/views/partials/']
   }));
   app.set('views', config.root + '/app/views');
   app.set('view engine', '.hbs');
@@ -43,6 +41,7 @@ module.exports = function(app, config) {
     saveUninitialized: false,
     secret: 'läsa'
   }));
+  app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(compress());

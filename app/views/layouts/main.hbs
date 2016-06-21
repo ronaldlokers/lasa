@@ -18,6 +18,15 @@
         <h1>{{title}}</h1>
       </div>
       {{> breadcrumbs}}
+      {{#if messages.error}}
+        <div class="alert alert-danger" role="alert">
+          <ul>
+            {{#each messages.error}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
       {{{body}}}
     </div>
     <script src="/components/jquery/dist/jquery.min.js"></script>

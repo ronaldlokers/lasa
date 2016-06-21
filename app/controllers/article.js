@@ -11,7 +11,7 @@ function ensureAuthenticated(req, res, next) {
     return next(); }
 
   // denied. redirect to login
-  res.redirect('/login');
+  res.redirect(401, '/login');
 }
 
 module.exports = function (app) {
@@ -28,7 +28,7 @@ module.exports = function (app) {
       }
 
       var article = new Article({
-        description: "test",
+        description: 'test',
         title: req.body.title,
         hyperlink: req.body.hyperlink,
         isRead: false,
